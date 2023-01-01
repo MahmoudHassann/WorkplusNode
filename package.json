@@ -1,0 +1,23 @@
+{
+  "name": "workplus-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase": "^9.12.1",
+    "firebase-admin": "^11.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^9.0.0"
+  }
+}
