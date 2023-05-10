@@ -18,6 +18,7 @@ import {
 import { readFile } from "fs/promises";
 import admin from "firebase-admin";
 
+
 const Port = process.env.PORT;
 
 const json = JSON.parse(
@@ -373,6 +374,7 @@ app.post("/sendMSG/:id", async (req, res) => {
   console.log("Document written with ID: ", docRef.id);
   res.json({ Message: "Done", docRef });
 });
+
 app.post("/file", async (req, res) => {
   const {filepath} = req.body
   const metadata = {
@@ -422,6 +424,7 @@ app.post("/addCategory", async (req, res) => {
     urlPhoto: ""
   });
   console.log("Document written with ID: ", docRef.id);
+  res.status(200).json({ Message: "success", docRef });
 });
 
 
@@ -521,6 +524,42 @@ app.post("/userWork", async (req, res) => {
     // doc.data() will be undefined in this case
     console.log("No such document!");
   }
+});
+
+
+app.post("/addWork", async (req, res) => {
+  const { id,title,completionDate,description,directLink,filelink,imagelink,tags} = req.body;
+  const uid = uuidv4()
+  let data = {
+    title: title,
+    completionDate:completionDate,
+    dateOfAdd: new Date(),
+    description:description,
+    directLink:directLink,
+    file:filelink,
+    image:imagelink,
+    tags:tags,
+    userId:id,
+    myWorkId:uid
+  }
+  console.log(data);
+  await setDoc(doc(db, "MyWorks", uid), data);
+  res.status(200).json({ Message: "success"});
+});
+
+
+
+app.patch("/updateWork", async (req, res) => {
+  const { id,category} = req.body;
+  const revRef = doc(db, "SubCategory", id);
+    await updateDoc(revRef, {
+      title: category,
+    }).then((docRef) => {
+      res.status(200).json({ Message: "updated", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
 });
 
 /* WORKS */
