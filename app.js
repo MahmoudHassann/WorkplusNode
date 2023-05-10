@@ -17,7 +17,6 @@ import {
 } from "firebase/firestore";
 import { readFile } from "fs/promises";
 import admin from "firebase-admin";
-import jwt from "jsonwebtoken";
 
 const Port = process.env.PORT;
 
@@ -25,9 +24,14 @@ const json = JSON.parse(
   await readFile(new URL("./firbaseAdmin.json", import.meta.url))
 );
 
-const app = express();
+const app = express();  
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+  {
+    credentials:true,
+    origin:'http://localhost:4200'
+  }
+));
 admin.initializeApp({
   credential: admin.credential.cert(json),
   storageBucket:"bfcai-7c34e.appspot.com"
@@ -88,17 +92,39 @@ app.get("/users", async (req, res) => {
   });
   res.status(200).json({ Message: "Success", users });
 });
+
 app.post("/user", async (req, res) => {
   const { id } = req.body;
   const docRef = doc(db, "Users", id);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
+    let data = docSnap.data()
+    res.status(200).json({ Message: "Success",data });
     console.log("Document data:", docSnap.data().fcm);
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
   }
+});
+
+app.put("/updateProfile", async (req, res) => {
+  const { id,Data} = req.body;
+  const userRef = doc(db, "Users", id);
+ 
+await updateDoc(userRef, {
+  Name:Data.name,
+  Description: Data.description,
+  Image: Data.image,
+  Phone: Data.phone,
+  Tags: Data.tags,
+})
+  .then((docRef) => {
+    res.status(200).json({ Message: "updated", docRef });
+  })
+  .catch((e) => {
+    res.status(500).json(`Error:- ${e}`);
+  });
 });
 
 /* User */
@@ -145,9 +171,10 @@ app.patch("/updateVerfication", async (req, res) => {
     /* Message */
 
     if (docSnap.exists()) {
+      console.log(docSnap.data().Verified);
       if (
-        docSnap.Verified == "Verified" ||
-        docSnap.Verified == "Not Verified"
+        docSnap.data().Verified == "Verified" ||
+        docSnap.data().Verified == "Not Verified"
       ) {
         res.status(400).json(`User Can't Verified`);
       } else {
@@ -369,3 +396,117 @@ app.post("/file", async (req, res) => {
 app.listen(Port, () => {
   console.log(`Server Is Running On Port ${Port}`);
 });
+
+
+/* Freelance */
+
+app.get("/freelanceProjects", async (req, res) => {
+  const FL_Projects = [];
+  const querySnapshot = await getDocs(collection(db, "FreelanceProjects"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    FL_Projects.push(doc.data());
+  });
+  res.status(200).json({ Message: "Success", FL_Projects });
+});
+
+
+
+
+
+
+app.post("/addCategory", async (req, res) => {
+  const { title } = req.body;
+  const docRef = await addDoc(collection(db, "Category"), {
+    title: title,
+    urlPhoto: ""
+  });
+  console.log("Document written with ID: ", docRef.id);
+});
+
+
+
+app.patch("/updateCategory", async (req, res) => {
+  const { id,title } = req.body;
+  const revRef = doc(db, "Category", id);
+  // Set the "capital" field of the city 'DC'
+  await updateDoc(revRef, {
+    title: title, 
+  })
+    .then((docRef) => {
+      res.status(200).json({ Message: "updated", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+});
+
+
+app.delete("/deleteCategory/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params);
+  const disRef = doc(db, "Category", id);
+  await deleteDoc(disRef)
+    .then((docRef) => {
+      res.status(200).json({ Message: "Deleted", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+}); 
+
+
+app.post("/addSubCategory", async (req, res) => {
+  const { category,subcategory } = req.body;
+  const docRef = await addDoc(collection(db, "SubCategory"), {
+    title: category,
+    subtitle:subcategory,
+    urlPhoto: ""
+  });
+  console.log("Document written with ID: ", docRef.id);
+  res.status(200).json({ Message: "success", docRef });
+});
+
+
+
+app.patch("/updateSubCategory", async (req, res) => {
+  const { id,category} = req.body;
+  const revRef = doc(db, "SubCategory", id);
+    await updateDoc(revRef, {
+      title: category,
+    }).then((docRef) => {
+      res.status(200).json({ Message: "updated", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+});
+
+
+app.delete("/deleteSubCategory/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params);
+  const disRef = doc(db, "SubCategory", id);
+  await deleteDoc(disRef)
+    .then((docRef) => {
+      res.status(200).json({ Message: "Deleted", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+}); 
+
+
+/* WORKS */
+
+app.get("/myworks", async (req, res) => {
+  const FL_MyWorks = [];
+  const querySnapshot = await getDocs(collection(db, "MyWorks"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    FL_MyWorks.push(doc.data());
+  });
+  res.status(200).json({ Message: "Success", FL_MyWorks });
+});
+
+/* WORKS */
