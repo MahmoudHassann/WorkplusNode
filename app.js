@@ -509,4 +509,18 @@ app.get("/myworks", async (req, res) => {
   res.status(200).json({ Message: "Success", FL_MyWorks });
 });
 
+app.post("/userWork", async (req, res) => {
+  const { id } = req.body;
+  const docRef = doc(db, "MyWorks", id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    let data = docSnap.data()
+    res.status(200).json({ Message: "Success",data });
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+});
+
 /* WORKS */
