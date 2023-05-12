@@ -563,3 +563,13 @@ app.patch("/updateWork", async (req, res) => {
 });
 
 /* WORKS */
+
+app.get("/rates", async (req, res) => {
+  const rates = [];
+  const querySnapshot = await getDocs(collection(db, "Rates"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    rates.push(doc.data());
+  });
+  res.status(200).json({ Message: "Success", rates });
+});
