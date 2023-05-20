@@ -27,12 +27,7 @@ const json = JSON.parse(
 
 const app = express();  
 app.use(express.json());
-app.use(cors(
-  {
-    credentials:true,
-    origin:'http://localhost:4200'
-  }
-));
+app.use(cors());
 admin.initializeApp({
   credential: admin.credential.cert(json),
   storageBucket:"bfcai-7c34e.appspot.com"
