@@ -326,6 +326,19 @@ app.get("/getJobs", async (req, res) => {
   });
   res.status(200).json({ Message: "Success", Jobs });
 });
+
+app.get("/getApplicants/:id", async (req, res) => {
+  const {id} =req.params
+  let applicants = [];
+  const querySnapshot = await getDocs(collection(db, "Jobs", id, "Applicants"));
+  if (querySnapshot.size) {
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+      applicants.push(doc.data());
+    });
+    res.json({ Message: "Done", applicants });
+  }
+});
 /* Jobs */
 /* ChatWithAdmin */
 
@@ -546,7 +559,7 @@ app.post("/addWork", async (req, res) => {
 
 app.patch("/updateWork", async (req, res) => {
   const { id,category} = req.body;
-  const revRef = doc(db, "SubCategory", id);
+  const revRef = doc(db, "MyWorks", id);
     await updateDoc(revRef, {
       title: category,
     }).then((docRef) => {
@@ -556,6 +569,19 @@ app.patch("/updateWork", async (req, res) => {
       res.status(500).json(`Error:- ${e}`);
     });
 });
+
+app.delete("/deleteWork/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params);
+  const disRef = doc(db, "MyWorks", id);
+  await deleteDoc(disRef)
+    .then((docRef) => {
+      res.status(200).json({ Message: "Deleted", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+}); 
 
 /* WORKS */
 
