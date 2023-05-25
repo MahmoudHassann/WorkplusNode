@@ -558,10 +558,16 @@ app.post("/addWork", async (req, res) => {
 
 
 app.patch("/updateWork", async (req, res) => {
-  const { id,category} = req.body;
+  const { id,title,completionDate,description,directLink,filelink,imagelink,tags} = req.body;
   const revRef = doc(db, "MyWorks", id);
     await updateDoc(revRef, {
-      title: category,
+      title: title,
+      completionDate:completionDate,
+      description:description,
+      directLink:directLink,
+      file:filelink,
+      image:imagelink,
+      tags:tags,
     }).then((docRef) => {
       res.status(200).json({ Message: "updated", docRef });
     })
