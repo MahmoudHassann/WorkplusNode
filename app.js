@@ -510,7 +510,7 @@ app.delete("/deleteSubCategory/:id", async (req, res) => {
 
 /* WORKS */
 
-app.get("/myworks", async (req, res) => {
+/* app.get("/myworks", async (req, res) => {
   const FL_MyWorks = [];
   const querySnapshot = await getDocs(collection(db, "MyWorks"));
   querySnapshot.forEach((doc) => {
@@ -518,20 +518,20 @@ app.get("/myworks", async (req, res) => {
     FL_MyWorks.push(doc.data());
   });
   res.status(200).json({ Message: "Success", FL_MyWorks });
-});
+}); */
 
 app.post("/userWork", async (req, res) => {
   const { id } = req.body;
-  const docRef = doc(db, "MyWorks", id);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    let data = docSnap.data()
-    res.status(200).json({ Message: "Success",data });
-  } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
-  }
+  const FL_MyWorks = [];
+  const querySnapshot = await getDocs(collection(db, "MyWorks"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    if(doc.data().userId == id)
+      FL_MyWorks.push(doc.data());
+    else
+    console.log("Error");
+  });
+  res.status(200).json({ Message: "Success", FL_MyWorks });
 });
 
 
