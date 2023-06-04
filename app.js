@@ -438,7 +438,15 @@ app.put("/updateProjects", async (req, res) => {
 
 
 
-
+app.get("/getCategories", async (req, res) => {
+  const ctg = [];
+  const querySnapshot = await getDocs(collection(db, "Category"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    ctg.push(doc.data());
+  });
+  res.status(200).json({ Message: "Success", ctg });
+});
 
 app.post("/addCategory", async (req, res) => {
   const { title } = req.body;
@@ -480,6 +488,16 @@ app.delete("/deleteCategory/:id", async (req, res) => {
       res.status(500).json(`Error:- ${e}`);
     });
 }); 
+
+app.get("/getSubCategories", async (req, res) => {
+  const sctg = [];
+  const querySnapshot = await getDocs(collection(db, "SubCategory"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    sctg.push(doc.data());
+  });
+  res.status(200).json({ Message: "Success", sctg });
+});
 
 
 app.post("/addSubCategory", async (req, res) => {
