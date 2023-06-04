@@ -420,6 +420,21 @@ app.get("/freelanceProjects", async (req, res) => {
   res.status(200).json({ Message: "Success", FL_Projects });
 });
 
+app.put("/updateProjects", async (req, res) => {
+  const { id,value} = req.body;
+  const revRef = doc(db, "FreelanceProjects", id);
+  // Set the "capital" field of the city 'DC'
+  await updateDoc(revRef, {
+    reviewed: value, 
+  })
+    .then((docRef) => {
+      res.status(200).json({ Message: "updated", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+});
+
 
 
 
