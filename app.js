@@ -274,6 +274,27 @@ app.get("/getReviews", async (req, res) => {
   res.status(200).json({ Message: "Success", compRev });
 });
 
+app.post("/addReviews", async (req, res) => {
+  const { userid,title,text,tags} = req.body;
+  const uid = uuidv4()
+  let data = {
+    title: title,
+    description: text,
+    likeNumber:0,
+    viewNumber:0,
+    commentNumber:0,
+    date_of_post:new Date(),
+    tags: tags,
+    images:[""],
+    reviewed: false,
+    PostId:uid,
+    userId: userid,
+  }
+  console.log(data);
+  await setDoc(doc(db, "CompanyReviews", uid), data);
+  res.status(200).json({ Message: "success"});
+});
+
 app.patch("/updateReviews", async (req, res) => {
   const { id } = req.body;
   const revRef = doc(db, "CompanyReviews", id);
@@ -300,6 +321,20 @@ app.get("/getDiscus", async (req, res) => {
     post.push(doc.data());
   });
   res.status(200).json({ Message: "Success", post });
+});
+
+app.post("/addDiscus", async (req, res) => {
+  const { text,userid,userName } = req.body;
+  const docRef = await addDoc(collection(db, "DiscussPosts"), {
+    text: text,
+    name:userName,
+    dateTime:new Date(),
+    postImage: "",
+    imageProfile: "",
+    uId: userid,
+  });
+  console.log("Document written with ID: ", docRef.id);
+  res.status(200).json({ Message: "success", docRef });
 });
 
 app.delete("/deleteDiscuss/:id", async (req, res) => {
