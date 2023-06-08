@@ -599,7 +599,8 @@ app.patch("/updateTrans", async (req, res) => {
   const revRef = doc(db, "TransactionHistory", id);
     await updateDoc(revRef, {
       status: true,
-      user_earn: 0
+      user_earn: 0,
+      full_money:doc.data().system_earn
     }).then((docRef) => {
       res.status(200).json({ Message: "updated", docRef });
     })
