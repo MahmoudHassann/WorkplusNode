@@ -623,16 +623,6 @@ await updateDoc(userRef, {
 });
 /* WORKS */
 
-/* app.get("/myworks", async (req, res) => {
-  const FL_MyWorks = [];
-  const querySnapshot = await getDocs(collection(db, "MyWorks"));
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    FL_MyWorks.push(doc.data());
-  });
-  res.status(200).json({ Message: "Success", FL_MyWorks });
-}); */
-
 app.post("/userWork", async (req, res) => {
   const { id } = req.body;
   const FL_MyWorks = [];
