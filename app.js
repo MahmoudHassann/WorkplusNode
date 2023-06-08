@@ -595,10 +595,11 @@ app.get("/finance", async (req, res) => {
 });
 
 app.patch("/updateTrans", async (req, res) => {
-  const { id,status} = req.body;
+  const {id} = req.body;
   const revRef = doc(db, "TransactionHistory", id);
     await updateDoc(revRef, {
-      status: status,
+      status: true,
+      user_earn: 0
     }).then((docRef) => {
       res.status(200).json({ Message: "updated", docRef });
     })
