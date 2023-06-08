@@ -584,7 +584,10 @@ app.get("/finance", async (req, res) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     wallet.push(doc.data());
-    totaluserEarn += Number(doc.data().user_earn)
+    if(doc.data().type == 'project_finished')
+    {
+      totaluserEarn += Number(doc.data().user_earn)
+    }
     totalsysEarn += Number(doc.data().system_earn)
   });
   res.status(200).json({ Message: "Success", wallet,totaluserEarn,totalsysEarn });
