@@ -594,6 +594,33 @@ app.get("/finance", async (req, res) => {
   res.status(200).json({ Message: "Success", wallet,totaluserEarn,totalsysEarn });
 });
 
+app.patch("/updateTrans", async (req, res) => {
+  const { id,status} = req.body;
+  const revRef = doc(db, "TransactionHistory", id);
+    await updateDoc(revRef, {
+      status: status,
+    }).then((docRef) => {
+      res.status(200).json({ Message: "updated", docRef });
+    })
+    .catch((e) => {
+      res.status(500).json(`Error:- ${e}`);
+    });
+});
+
+app.put("/updateWallet", async (req, res) => {
+  const { id,amount} = req.body;
+  const userRef = doc(db, "Users", id);
+ 
+await updateDoc(userRef, {
+  wallet:amount,
+})
+  .then((docRef) => {
+    res.status(200).json({ Message: "updated", docRef });
+  })
+  .catch((e) => {
+    res.status(500).json(`Error:- ${e}`);
+  });
+});
 /* WORKS */
 
 /* app.get("/myworks", async (req, res) => {
