@@ -585,7 +585,7 @@ app.get("/finance", async (req, res) => {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     uid = {transID:doc.id}
-    wallet.push(doc.data(),uid);
+    wallet.push({data:doc.data(),transID:doc.id});
     
     if(doc.data().type == 'project_finished')
     {
