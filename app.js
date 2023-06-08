@@ -578,13 +578,11 @@ app.delete("/deleteSubCategory/:id", async (req, res) => {
 
 app.get("/finance", async (req, res) => {
   const wallet = [];
-  let uid = {};
   let totaluserEarn = 0;
   let totalsysEarn = 0;
   const querySnapshot = await getDocs(collection(db, "TransactionHistory"));
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    uid = {transID:doc.id}
     wallet.push({data:doc.data(),transID:doc.id});
     
     if(doc.data().type == 'project_finished')
